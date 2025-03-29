@@ -1,6 +1,48 @@
-﻿@page "/index.html"
-@inherits IndexPage
+﻿@page "/"
+@inject HttpClient Http
+@using subbedsub.Models
 
-<h1>Hello, from Blazor.</h1>
-<InputText aria-placeholder="your openai api key here"></InputText>
-<button></button>
+<h3>Manage OpenAI Keys</h3>
+
+<div>
+    <label for="selectedKey">Select OpenAI Key:</label>
+    <select @bind="selectedKeyId">
+        @foreach (var key in keys)
+        {
+            <option value="@key.Id">@key.Key</option>
+        }
+    </select>
+</div>
+
+<div>
+    <label for="darkMode">Dark Mode:</label>
+    <InputCheckbox @bind-Value="darkMode" />
+</div>
+
+<button @onclick="SavePreferences" class="btn btn-primary">Save</button>
+
+<a href="create" class="btn btn-secondary">Create New Key</a>
+
+@code {
+    private List<OpenAIKey> keys = new List<OpenAIKey>();
+    private int selectedKeyId;
+    private bool darkMode;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Fetch OpenAI keys from the API
+        keys = await Http.GetFromJsonAsync<List<OpenAIKey>>("https://localhost:5001/api/OpenAIKeys");
+
+        // Fetch the current dark mode preference
+        var preference = await Http.GetFromJsonAsync<UserPreference>("https://localhost:5001/api/UserPreferences");
+        darkMode = preference?.DarkMode ?? false;
+    }
+
+    private async Task SavePreferences()
+    {
+        var userPreference = new UserPreference { DarkMode = darkMode };
+        
+        // Send POST request to save user preferences (e.g., dark mode)
+        await Http.PostAsJsonAsync("https://localhost:5001/api/UserPreferences", userPreference);
+    }
+}

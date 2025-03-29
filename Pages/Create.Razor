@@ -1,0 +1,34 @@
+﻿@page "/create"
+@inject HttpClient Http
+@inject NavigationManager Nav
+@using subbedsub.Models
+
+<h3>Create OpenAI Key</h3>
+
+<EditForm Model="openAIKey" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label for="Key">OpenAI Key:</label>
+        <InputText id="Key" class="form-control" @bind-Value="openAIKey.Key" />
+    </div>
+
+    <div>
+        <label for="DarkMode">Dark Mode:</label>
+        <InputCheckbox id="DarkMode" class="form-control" @bind-Value="openAIKey.DarkMode" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+</EditForm>
+
+@code {
+    private OpenAIKey openAIKey = new OpenAIKey();
+
+    private async Task HandleValidSubmit()
+    {
+        // Send POST request to API to create new OpenAI key
+        await Http.PostAsJsonAsync("https://localhost:5001/api/OpenAIKeys", openAIKey);
+        Nav.NavigateTo("/"); // Redirect to main page after creation
+    }
+}

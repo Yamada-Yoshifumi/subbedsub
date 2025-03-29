@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore.Sqlite;
-using RazorPagesSettings.Data;
+using subbedsub.Data;
 
 namespace subbedsub
 {
@@ -20,8 +20,9 @@ namespace subbedsub
             builder.RootComponents.Add<HeadOutlet>("head::after");
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddBrowserExtensionServices();
-            builder.Services.AddDbContext<RazorPagesSettingsContext>(options =>
-                options.UseSqlite(builder.Configuration.GetConnectionString("RazorPagesSettingsContext") ?? throw new InvalidOperationException("Connection string 'RazorPagesMovieContext' not found.")));
+
+            //builder.Services.AddDbContext<AppDbContext>(options =>
+            //    options.UseSqlite(builder.Configuration.GetConnectionString("AppDbContext") ?? throw new InvalidOperationException("Connection string 'AppDbContext' not found.")));
             await builder.Build().RunAsync();
         }
     }
